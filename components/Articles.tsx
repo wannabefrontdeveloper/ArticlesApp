@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import {Article} from '../api/types';
+import ArticleItem from './ArticleItem';
 
 export interface ArticlesProps {
   articles: Article[];
@@ -11,7 +12,14 @@ function Articles({articles}: ArticlesProps) {
   return (
     <FlatList
       data={articles}
-      renderItem={() => null}
+      renderItem={({item}) => (
+        <ArticleItem
+          id={item.id}
+          title={item.title}
+          publishedAt={item.published_at}
+          username={item.user.username}
+        />
+      )}
       keyExtractor={item => item.id.toString()}
       style={styles.list}
       ItemSeparatorComponent={() => <View style={styles.separator} />}

@@ -1,10 +1,20 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {RootStackParamList} from './types';
+import MainTab from './MainTab';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootStack() {
-  return <Stack.Navigator>{/* TODO: 화면 추가 */}</Stack.Navigator>;
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="MainTab"
+        component={MainTab}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
 }
 
 export default RootStack;

@@ -7,6 +7,7 @@ import {getComments} from '../api/comments';
 import {RootStackParamList} from './types';
 import ArticleView from '../components/ArticleView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import CommentItem from '../components/CommentItem';
 
 type ArticleScreenRouteProp = RouteProp<RootStackParamList, 'Article'>;
 
@@ -33,7 +34,14 @@ function ArticleScreen() {
       style={styles.flatList}
       contentContainerStyle={[styles.flatListContent, {paddingBottom: bottom}]}
       data={commentsQuery.data}
-      renderItem={() => null}
+      renderItem={({item}) => (
+        <CommentItem
+          id={item.id}
+          message={item.message}
+          publishedAt={item.published_at}
+          username={item.user.username}
+        />
+      )}
       keyExtractor={item => item.id.toString()}
       ListHeaderComponent={
         <ArticleView

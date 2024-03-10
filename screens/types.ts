@@ -13,8 +13,8 @@ export type MainTabParamList = {
 export type MainTabNavigationScreenParams =
   NavigatorScreenParams<MainTabParamList>;
 export type MainTabNavigationProp = CompositeNavigationProp<
-RootStackNavigationProp,
-BottomTabNavigationProp<MainTabParamList>
+  RootStackNavigationProp,
+  BottomTabNavigationProp<MainTabParamList>
 >;
 export type MainTabRouteProp = RouteProp<RootStackParamList, 'MainTab'>;
 

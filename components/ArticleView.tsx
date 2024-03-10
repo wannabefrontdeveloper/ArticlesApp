@@ -16,7 +16,7 @@ function ArticleView({title, body, publishedAt, username}: ArticleViewProps) {
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.username}>{username}</Text>
       <Text style={styles.date}>{formattedDate}</Text>
-      <Text style={styles.separator} />
+      <View style={styles.separator} />
       <Text>{body}</Text>
     </View>
   );

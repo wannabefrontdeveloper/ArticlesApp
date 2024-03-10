@@ -26,7 +26,7 @@ function ArticleScreen() {
     <View>
       <Text>{articleQuery.data.title}</Text>
       <Text>{articleQuery.data.body}</Text>
-      <Text>{articleQuery.data.length}개의 댓글</Text>
+      <Text>{commentsQuery.data.length}개의 댓글</Text>
     </View>
   );
 }

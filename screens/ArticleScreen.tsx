@@ -1,8 +1,17 @@
+import {RouteProp, useRoute} from '@react-navigation/core';
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
+import {RootStackParamList} from './types';
+
+type ArticleScreenRouteProp = RouteProp<RootStackParamList, 'Article'>;
 
 function ArticleScreen() {
-  return <View style={styles.block} />;
+  const {params} = useRoute<ArticleScreenRouteProp>();
+  return (
+    <View style={styles.block}>
+      <Text>{params.id}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

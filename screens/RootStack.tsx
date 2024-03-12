@@ -7,6 +7,7 @@ import RegisterScreen from './RegisterScreen';
 import LoginScreen from './LoginScreen';
 import MyArticlesScreen from './MyArticlesScreen';
 import useAuthLoadEffect from '../hooks/useAuthLoadEffect';
+import WriteScreen from './WriteScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,6 +39,11 @@ function RootStack() {
         name="Article"
         component={ArticleScreen}
         options={{title: '게시글'}}
+      />
+      <Stack.Screen
+        name="Write"
+        component={WriteScreen}
+        options={{title: '새 게시글 작성'}}
       />
     </Stack.Navigator>
   );

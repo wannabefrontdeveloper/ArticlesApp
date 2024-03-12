@@ -6,8 +6,10 @@ import {useUserState} from '../contexts/UserContext';
 import {RootStackNavigationProp} from '../screens/types';
 import {applyToken} from '../api/client';
 import authStorage from '../storages/authStorage';
+import useInform from './useInform';
 
 export default function useLogin() {
+  const inform = useInform();
   const [, setUser] = useUserState();
   const navigation = useNavigation<RootStackNavigationProp>();
   const mutation = useMutation(login, {
@@ -18,8 +20,12 @@ export default function useLogin() {
       authStorage.set(data);
     },
     onError: (error: AuthError) => {
-      console.log(error);
-      console.log(error.response?.data);
+      const message =
+        error.response?.data?.data?.[0]?.messages[0].message ?? '로그인 실패';
+      inform({
+        title: '오류',
+        message,
+      });
     },
   });
   return mutation;

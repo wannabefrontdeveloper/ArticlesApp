@@ -12,6 +12,7 @@ import {RootStackNavigationProp} from './types';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useMutation, useQueryClient} from 'react-query';
 import {writeArticle} from '../api/articles';
+import {Article} from '../api/types';
 
 function WriteScreen() {
   const {top} = useSafeAreaInsets();
@@ -19,8 +20,13 @@ function WriteScreen() {
   const [body, setBody] = useState('');
   const queryClient = useQueryClient();
   const {mutate: write} = useMutation(writeArticle, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('articles'); // articles 캐시 키를 만료시키기
+    onSuccess: article => {
+      /* queryClient.invalidateQueries('articles'); // articles 캐시 키를 만료시키기
+       */
+      // 캐시 데이터 조회
+      const articles = queryClient.getQueryData<Article[]>('articles') ?? [];
+      // 캐시 데이터 업데이트
+      queryClient.setQueryData('articles', articles.concat(article));
       navigation.goBack();
     },
   });

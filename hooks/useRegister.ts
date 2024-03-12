@@ -1,5 +1,6 @@
 import {useMutation} from 'react-query';
 import {register} from '../api/auth';
+import {AuthError} from '../api/types';
 
 export default function useRegister() {
   const mutation = useMutation(register, {
@@ -7,7 +8,7 @@ export default function useRegister() {
       console.log(data);
       /* TODO: 구현예정 */
     },
-    onError: error => {
+    onError: (error: AuthError) => {
       console.log(error);
       /* TODO: 구현 예정 */
     },

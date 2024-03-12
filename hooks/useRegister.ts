@@ -1,11 +1,17 @@
 import {useMutation} from 'react-query';
 import {register} from '../api/auth';
 import {AuthError} from '../api/types';
+import {useNavigation} from '@react-navigation/core';
+import {useUserState} from '../contexts/UserContext';
+import {RootStackNavigationProp} from '../screens/types';
 
 export default function useRegister() {
+  const [, setUser] = useUserState();
+  const navigation = useNavigation<RootStackNavigationProp>();
   const mutation = useMutation(register, {
     onSuccess: data => {
-      console.log(data);
+      setUser(data.user);
+      navigation.pop();
       /* TODO: 구현예정 */
     },
     onError: (error: AuthError) => {

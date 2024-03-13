@@ -1,5 +1,5 @@
 import {RouteProp, useRoute} from '@react-navigation/core';
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, ActivityIndicator, FlatList} from 'react-native';
 import {useQuery} from 'react-query';
 import {getArticle} from '../api/articles';
@@ -14,9 +14,24 @@ import CommentInput from '../components/CommentInput';
 type ArticleScreenRouteProp = RouteProp<RootStackParamList, 'Article'>;
 
 function ArticleScreen() {
+
+  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(
+    null,
+  );
+  const [askRemoveComment, setAskRemoveComment] = useState(false);
+
   const onRemove = (commentId: number) => {
-    /* TODO: 구현예정 */
-    console.log(commentId);
+    setSelectedCommentId(commentId);
+    setAskRemoveComment(true);
+  };
+
+  const onConfirmRemove = () => {
+    console.log(selectedCommentId);
+    setAskRemoveComment(false);
+    // TODO: 구현예정
+  };
+  const onCancelRemove = () => {
+    setAskRemoveComment(false);
   };
   const onModify = (commentId: number) => {
     /* TODO: 구현예정 */

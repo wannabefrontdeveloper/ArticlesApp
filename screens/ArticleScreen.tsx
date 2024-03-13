@@ -61,7 +61,7 @@ function ArticleScreen() {
   };
 
   const selectedComment = commentsQuery.data?.find(
-    (comment) => comment.id === selectedCommentId,
+    comment => comment.id === selectedCommentId,
   );
   const {params} = useRoute<ArticleScreenRouteProp>();
   const {id} = params;
@@ -125,6 +125,12 @@ function ArticleScreen() {
         confirmText="삭제"
         onConfirm={onConfirmRemove}
         onClose={onCancelRemove}
+      />
+      <CommentModal
+        visible={modifying}
+        initialMessage={selectedComment?.message}
+        onClose={onCancelModify}
+        onSubmit={onSubmitModify}
       />
     </>
   );

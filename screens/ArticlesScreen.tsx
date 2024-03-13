@@ -7,7 +7,7 @@ import Articles from '../components/Articles';
 import {useUserState} from '../contexts/UserContext';
 
 function ArticlesScreen() {
-  const {data} = useInfiniteQuery(
+  const {data, isFetchingNextPage, fetchNextPage} = useInfiniteQuery(
     'articles',
     ({pageParam}) => getArticles({cursor: pageParam}),
     {
@@ -30,7 +30,14 @@ function ArticlesScreen() {
     );
   }
 
-  return <Articles articles={items} showWriteButton={!!user} />;
+  return (
+    <Articles
+      articles={items}
+      showWriteButton={!!user}
+      isFetchingNextPage={isFetchingNextPage}
+      fetchNextPage={fetchNextPage}
+    />
+  );
 }
 
 const styles = StyleSheet.create({

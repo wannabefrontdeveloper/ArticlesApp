@@ -35,8 +35,9 @@ function ArticleScreen() {
     },
   });
 
-  const [selectedCommentId, setSelectedCommentId] =
-    useState<number | null>(null);
+  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(
+    null,
+  );
   const [askRemoveComment, setAskRemoveComment] = useState(false);
   const [modifying, setModifying] = useState(false);
 
@@ -74,7 +75,7 @@ function ArticleScreen() {
   const onSubmitModify = (message: string) => {
     setModifying(false);
     modify({
-      id: selectedComment!,
+      id: selectedCommentId!, // selectedCommentId를 사용하도록 수정
       articleId: id,
       message,
     });

@@ -7,6 +7,8 @@ import WriteButton from './WriteButton';
 export interface ArticlesProps {
   articles: Article[];
   showWriteButton?: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage(): void;
 }
 
 function Articles({articles, showWriteButton}: ArticlesProps) {

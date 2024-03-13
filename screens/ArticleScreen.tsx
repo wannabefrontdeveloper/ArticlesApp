@@ -10,11 +10,11 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CommentItem from '../components/CommentItem';
 import {useUserState} from '../contexts/UserContext';
 import CommentInput from '../components/CommentInput';
+import AskDialog from '../components/AskDialog';
 
 type ArticleScreenRouteProp = RouteProp<RootStackParamList, 'Article'>;
 
 function ArticleScreen() {
-
   const [selectedCommentId, setSelectedCommentId] = useState<number | null>(
     null,
   );
@@ -57,36 +57,50 @@ function ArticleScreen() {
   const isMyArticle = currentUser?.id === user.id;
 
   return (
-    <FlatList
-      style={styles.flatList}
-      contentContainerStyle={[styles.flatListContent, {paddingBottom: bottom}]}
-      data={commentsQuery.data}
-      renderItem={({item}) => (
-        <CommentItem
-          id={item.id}
-          message={item.message}
-          publishedAt={item.published_at}
-          username={item.user.username}
-          onRemove={onRemove}
-          onModify={onModify}
-          isMyComment={item.user.id === currentUser?.id}
-        />
-      )}
-      keyExtractor={item => item.id.toString()}
-      ListHeaderComponent={
-        <>
-          <ArticleView
-            title={title}
-            body={body}
-            publishedAt={published_at}
-            username={user.username}
-            id={id}
-            isMyArticle={isMyArticle}
+    <>
+      <FlatList
+        style={styles.flatList}
+        contentContainerStyle={[
+          styles.flatListContent,
+          {paddingBottom: bottom},
+        ]}
+        data={commentsQuery.data}
+        renderItem={({item}) => (
+          <CommentItem
+            id={item.id}
+            message={item.message}
+            publishedAt={item.published_at}
+            username={item.user.username}
+            onRemove={onRemove}
+            onModify={onModify}
+            isMyComment={item.user.id === currentUser?.id}
           />
-          <CommentInput articleId={id} />
-        </>
-      }
-    />
+        )}
+        keyExtractor={item => item.id.toString()}
+        ListHeaderComponent={
+          <>
+            <ArticleView
+              title={title}
+              body={body}
+              publishedAt={published_at}
+              username={user.username}
+              id={id}
+              isMyArticle={isMyArticle}
+            />
+            <CommentInput articleId={id} />
+          </>
+        }
+      />
+      <AskDialog
+        visible={askRemoveComment}
+        title="댓글 삭제"
+        message="댓글을 삭제하시겠습니까?"
+        isDestructive
+        confirmText="삭제"
+        onConfirm={onConfirmRemove}
+        onClose={onCancelRemove}
+      />
+    </>
   );
 }
 

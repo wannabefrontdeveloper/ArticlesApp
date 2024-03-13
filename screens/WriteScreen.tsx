@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -8,17 +8,31 @@ import {
   TextInput,
 } from 'react-native';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import {RootStackNavigationProp} from './types';
+import {RootStackNavigationProp, RootStackParamList} from './types';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {InfiniteData, useMutation, useQueryClient} from 'react-query';
 import {writeArticle} from '../api/articles';
 import {Article} from '../api/types';
 
+type WriteScreenRouteProp = RouteProp<RootStackParamList, 'Write'>;
+
 function WriteScreen() {
+  const {params} = useRoute<WriteScreenRouteProp>();
+  const queryClient = useQueryClient(); // queryClient 선언
+
+  // params.id 가 존재한다면 queryClient를 통해 캐시 조회
+  const cachedArticle = useMemo(
+    () =>
+      params.articleId
+        ? queryClient.getQueryData<Article>(['article', params.articleId])
+        : null,
+    [queryClient, params.articleId],
+  );
+
   const {top} = useSafeAreaInsets();
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
-  const queryClient = useQueryClient();
+  const [title, setTitle] = useState(cachedArticle?.title ?? '');
+  const [body, setBody] = useState(cachedArticle?.body ?? '');
+
   const {mutate: write} = useMutation(writeArticle, {
     onSuccess: article => {
       queryClient.setQueryData<InfiniteData<Article[]>>('articles', data => {
@@ -28,10 +42,9 @@ function WriteScreen() {
             pages: [[article]],
           };
         }
-        const [firstPage, ...rest] = data.pages; // 첫번째 페이지와 나머지 페이지를 구분
+        const [firstPage, ...rest] = data.pages;
         return {
           ...data,
-          // 첫 번째 페이지에서 article을 맨 앞에 추가, 그리고 그 뒤에 나머지 페이지
           pages: [[article, ...firstPage], ...rest],
         };
       });
@@ -40,6 +53,7 @@ function WriteScreen() {
   });
 
   const navigation = useNavigation<RootStackNavigationProp>();
+
   const onSubmit = useCallback(() => {
     write({title, body});
   }, [write, title, body]);

@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {StyleSheet, ActivityIndicator, FlatList} from 'react-native';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {getArticle} from '../api/articles';
-import {deleteComment, getComments} from '../api/comments';
+import {deleteComment, getComments, modifyCommnet} from '../api/comments';
 import {RootStackParamList} from './types';
 import ArticleView from '../components/ArticleView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -28,6 +28,16 @@ function ArticleScreen() {
     onSuccess: () => {
       queryClient.setQueryData<Comment[]>(['comments', id], comments =>
         comments ? comments.filter(c => c.id !== selectedCommentId) : [],
+      );
+    },
+  });
+
+  const {mutate: modify} = useMutation(modifyCommnet, {
+    onSuccess: comment => {
+      queryClient.setQueryData<Comment[]>(['comments', id], comments =>
+        comments
+          ? comments.map(c => (c.id === selectedCommentId ? comment : c))
+          : [],
       );
     },
   });
@@ -57,7 +67,11 @@ function ArticleScreen() {
   };
   const onSubmitModify = (message: string) => {
     setModifying(false);
-    // TODO: 구현 예정
+    modify({
+      id: selectedComment!,
+      articleId: id,
+      message,
+    });
   };
 
   const selectedComment = commentsQuery.data?.find(

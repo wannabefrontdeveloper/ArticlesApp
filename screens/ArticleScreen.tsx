@@ -14,6 +14,14 @@ import CommentInput from '../components/CommentInput';
 type ArticleScreenRouteProp = RouteProp<RootStackParamList, 'Article'>;
 
 function ArticleScreen() {
+  const onRemove = (commentId: number) => {
+    /* TODO: 구현예정 */
+    console.log(commentId);
+  };
+  const onModify = (commentId: number) => {
+    /* TODO: 구현예정 */
+    console.log(commentId);
+  };
   const {params} = useRoute<ArticleScreenRouteProp>();
   const {id} = params;
   const [currentUser] = useUserState();
@@ -44,6 +52,9 @@ function ArticleScreen() {
           message={item.message}
           publishedAt={item.published_at}
           username={item.user.username}
+          onRemove={onRemove}
+          onModify={onModify}
+          isMyComment={item.user.id === currentUser?.id}
         />
       )}
       keyExtractor={item => item.id.toString()}

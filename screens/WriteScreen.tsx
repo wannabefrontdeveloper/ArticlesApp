@@ -65,10 +65,8 @@ function WriteScreen() {
         return {
           pageParams: data!.pageParams,
           pages: data!.pages.map(page =>
-            // 우리가 수정할 항목이 있는 페이지를 찾고
-            page.find(a => a.id === params.articleId)
-              ? // 해당 페이지에서 id가 일치하는 항목을 교체
-              ? page.map((a) => (a.id === params.articleId ? article : a))
+            page.find(a => a.id === params.articleId) // 우리가 수정할 항목이 있는 페이지를 찾고
+              ? page.map(a => (a.id === params.articleId ? article : a)) // 해당 페이지에서 id가 일치하는 항목을 교체
               : page,
           ),
         };

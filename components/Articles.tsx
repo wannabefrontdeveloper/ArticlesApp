@@ -27,14 +27,7 @@ function Articles({
   refresh,
   isRefreshing,
 }: ArticlesProps) {
-  const renderWriteButton = () => {
-    return showWriteButton ? <WriteButton /> : null;
-  };
-
-  const renderSeparator = () => {
-    return <View style={styles.separator} />;
-  };
-
+  // TODO: renderItem 구현 예정
   return (
     <FlatList
       data={articles}
@@ -44,15 +37,12 @@ function Articles({
           title={item.title}
           publishedAt={item.published_at}
           username={item.user.username}
-          refreshControl={
-            <RefreshControl onRefresh={refresh} refreshing={isRefreshing} />
-          }
         />
       )}
       keyExtractor={item => item.id.toString()}
       style={styles.list}
-      ItemSeparatorComponent={renderSeparator}
-      ListHeaderComponent={renderWriteButton}
+      ItemSeparatorComponent={() => <View style={styles.separator} />}
+      ListHeaderComponent={() => (showWriteButton ? <WriteButton /> : null)}
       ListFooterComponent={() => (
         <>
           {articles.length > 0 ? <View style={styles.separator} /> : null}
@@ -67,6 +57,9 @@ function Articles({
       )}
       onEndReachedThreshold={0.5}
       onEndReached={fetchNextPage}
+      refreshControl={
+        <RefreshControl onRefresh={refresh} refreshing={isRefreshing} />
+      }
     />
   );
 }

@@ -1,13 +1,24 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, Pressable} from 'react-native';
+import {useMutation, useQueryClient} from 'react-query';
+import {writeComment} from '../api/comments';
+import {Comment} from '../api/types';
 import CommentModal from './CommentModal';
 
 export interface CommentInputProps {
   articleId: number;
 }
 
-function CommentInput({}: CommentInputProps) {
+function CommentInput({articleId}: CommentInputProps) {
   const [writingComment, setWritingComment] = useState(false);
+  const queryClient = useQueryClient();
+  const {mutate} = useMutation(writeComment, {
+    onSuccess: comment => {
+      queryClient.setQueryData<Comment[]>(['comments', articleId], comments =>
+        (comments || []).concat(comment),
+      );
+    },
+  });
 
   const onPress = () => {
     setWritingComment(true);
@@ -19,8 +30,10 @@ function CommentInput({}: CommentInputProps) {
 
   const onSubmit = (message: string) => {
     setWritingComment(false);
-    // TODO: 구현 예정
-    console.log(message);
+    mutate({
+      articleId,
+      message,
+    });
   };
 
   return (

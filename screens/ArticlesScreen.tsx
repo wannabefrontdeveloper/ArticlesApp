@@ -7,14 +7,15 @@ import Articles from '../components/Articles';
 import {useUserState} from '../contexts/UserContext';
 
 function ArticlesScreen() {
-  const {data, isFetchingNextPage, fetchNextPage} = useInfiniteQuery(
-    'articles',
-    ({pageParam}) => getArticles({cursor: pageParam}),
-    {
-      getNextPageParam: lastPage =>
-        lastPage.length === 10 ? lastPage[lastPage.length - 1].id : undefined,
-    },
-  );
+  const {data, isFetchingNextPage, fetchNextPage, refetch, isFetching} =
+    useInfiniteQuery(
+      'articles',
+      ({pageParam}) => getArticles({cursor: pageParam}),
+      {
+        getNextPageParam: lastPage =>
+          lastPage.length === 10 ? lastPage[lastPage.length - 1].id : undefined,
+      },
+    );
 
   const items = useMemo(() => {
     if (!data) {
@@ -36,6 +37,8 @@ function ArticlesScreen() {
       showWriteButton={!!user}
       isFetchingNextPage={isFetchingNextPage}
       fetchNextPage={fetchNextPage}
+      refresh={refetch}
+      isRefreshing={isFetching && !isFetchingNextPage}
     />
   );
 }

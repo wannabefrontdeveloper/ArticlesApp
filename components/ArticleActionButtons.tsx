@@ -43,7 +43,7 @@ function ArticleActionButtons({articleId}: ArticleActionButtonsProps) {
     setAskRemove(true);
   };
   const onCancelRemove = () => {
-    setAskRemove(true);
+    setAskRemove(false);
   };
   const onConfirmRemove = () => {
     setAskRemove(true);

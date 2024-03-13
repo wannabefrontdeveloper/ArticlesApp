@@ -1,9 +1,9 @@
 import {RouteProp, useRoute} from '@react-navigation/core';
 import React, {useState} from 'react';
 import {StyleSheet, ActivityIndicator, FlatList} from 'react-native';
-import {useQuery} from 'react-query';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {getArticle} from '../api/articles';
-import {getComments} from '../api/comments';
+import {deleteComment, getComments} from '../api/comments';
 import {RootStackParamList} from './types';
 import ArticleView from '../components/ArticleView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -11,6 +11,7 @@ import CommentItem from '../components/CommentItem';
 import {useUserState} from '../contexts/UserContext';
 import CommentInput from '../components/CommentInput';
 import AskDialog from '../components/AskDialog';
+import {Comment} from '../api/types';
 
 type ArticleScreenRouteProp = RouteProp<RootStackParamList, 'Article'>;
 
@@ -20,6 +21,15 @@ function ArticleScreen() {
   );
   const [askRemoveComment, setAskRemoveComment] = useState(false);
 
+  const queryClient = useQueryClient();
+  const {mutate: remove} = useMutation(deleteComment, {
+    onSuccess: () => {
+      queryClient.setQueryData<Comment[]>(['comments', id], comments =>
+        comments ? comments.filter(c => c.id !== selectedCommentId) : [],
+      );
+    },
+  });
+
   const onRemove = (commentId: number) => {
     setSelectedCommentId(commentId);
     setAskRemoveComment(true);
@@ -28,7 +38,10 @@ function ArticleScreen() {
   const onConfirmRemove = () => {
     console.log(selectedCommentId);
     setAskRemoveComment(false);
-    // TODO: 구현예정
+    remove({
+      id: selectedCommentId!, // null이 아님을 명시하기 위하여 ! 사용
+      articleId: id,
+    });
   };
   const onCancelRemove = () => {
     setAskRemoveComment(false);

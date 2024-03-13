@@ -12,6 +12,7 @@ import {useUserState} from '../contexts/UserContext';
 import CommentInput from '../components/CommentInput';
 import AskDialog from '../components/AskDialog';
 import {Comment} from '../api/types';
+import CommentModal from '../components/CommentModal';
 
 type ArticleScreenRouteProp = RouteProp<RootStackParamList, 'Article'>;
 
@@ -20,6 +21,7 @@ function ArticleScreen() {
     null,
   );
   const [askRemoveComment, setAskRemoveComment] = useState(false);
+  const [modifying, setModifying] = useState(false);
 
   const queryClient = useQueryClient();
   const {mutate: remove} = useMutation(deleteComment, {
@@ -47,9 +49,20 @@ function ArticleScreen() {
     setAskRemoveComment(false);
   };
   const onModify = (commentId: number) => {
-    /* TODO: 구현예정 */
-    console.log(commentId);
+    setSelectedCommentId(commentId);
+    setModifying(true);
   };
+  const onCancelModify = () => {
+    setModifying(false);
+  };
+  const onSubmitModify = (message: string) => {
+    setModifying(false);
+    // TODO: 구현 예정
+  };
+
+  const selectedComment = commentsQuery.data?.find(
+    (comment) => comment.id === selectedCommentId,
+  );
   const {params} = useRoute<ArticleScreenRouteProp>();
   const {id} = params;
   const [currentUser] = useUserState();

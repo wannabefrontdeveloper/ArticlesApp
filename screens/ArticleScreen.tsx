@@ -1,10 +1,10 @@
-import {RouteProp, useRoute} from '@react-navigation/core';
 import React, {useState} from 'react';
 import {StyleSheet, ActivityIndicator, FlatList} from 'react-native';
+import {RouteProp, useRoute} from '@react-navigation/core';
+import {RootStackParamList} from './types';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {getArticle} from '../api/articles';
-import {deleteComment, getComments, modifyCommnet} from '../api/comments';
-import {RootStackParamList} from './types';
+import {deleteComment, getComments, modifyComment} from '../api/comments';
 import ArticleView from '../components/ArticleView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CommentItem from '../components/CommentItem';
@@ -17,9 +17,26 @@ import CommentModal from '../components/CommentModal';
 type ArticleScreenRouteProp = RouteProp<RootStackParamList, 'Article'>;
 
 function ArticleScreen() {
-  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(
-    null,
-  );
+  const {params} = useRoute<ArticleScreenRouteProp>();
+  const {id} = params;
+
+  const articleQuery = useQuery(['article', id], () => getArticle(id));
+  const commentsQuery = useQuery(['comments', id], () => getComments(id));
+
+  const {bottom} = useSafeAreaInsets();
+  const [currentUser] = useUserState();
+  const {mutate: modify} = useMutation(modifyComment, {
+    onSuccess: comment => {
+      queryClient.setQueryData<Comment[]>(['comments', id], comments =>
+        comments
+          ? comments.map(c => (c.id === selectedCommentId ? comment : c))
+          : [],
+      );
+    },
+  });
+
+  const [selectedCommentId, setSelectedCommentId] =
+    useState<number | null>(null);
   const [askRemoveComment, setAskRemoveComment] = useState(false);
   const [modifying, setModifying] = useState(false);
 
@@ -32,23 +49,12 @@ function ArticleScreen() {
     },
   });
 
-  const {mutate: modify} = useMutation(modifyCommnet, {
-    onSuccess: comment => {
-      queryClient.setQueryData<Comment[]>(['comments', id], comments =>
-        comments
-          ? comments.map(c => (c.id === selectedCommentId ? comment : c))
-          : [],
-      );
-    },
-  });
-
   const onRemove = (commentId: number) => {
     setSelectedCommentId(commentId);
     setAskRemoveComment(true);
   };
 
   const onConfirmRemove = () => {
-    console.log(selectedCommentId);
     setAskRemoveComment(false);
     remove({
       id: selectedCommentId!, // null이 아님을 명시하기 위하여 ! 사용
@@ -77,14 +83,6 @@ function ArticleScreen() {
   const selectedComment = commentsQuery.data?.find(
     comment => comment.id === selectedCommentId,
   );
-  const {params} = useRoute<ArticleScreenRouteProp>();
-  const {id} = params;
-  const [currentUser] = useUserState();
-
-  const articleQuery = useQuery(['article', id], () => getArticle(id));
-  const commentsQuery = useQuery(['comments', id], () => getComments(id));
-
-  const {bottom} = useSafeAreaInsets();
 
   // 둘 중 하나라도 준비되지 않은 데이터가 있으면 스피너 보여주기
   if (!articleQuery.data || !commentsQuery.data) {

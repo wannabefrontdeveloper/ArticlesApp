@@ -20,7 +20,7 @@ export async function writeComment(params: {
   return response.data;
 }
 
-export async function modifyCommnet(params: {
+export async function modifyComment(params: {
   articleId: number;
   message: string;
   id: number;

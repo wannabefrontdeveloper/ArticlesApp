@@ -20,7 +20,7 @@ function ArticleActionButtons({articleId}: ArticleActionButtonsProps) {
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
         onPress={onPressModify}>
-        <text style={styles.buttonText}>수정</text>
+        <Text style={styles.buttonText}>수정</Text>
       </Pressable>
       <View style={styles.separator} />
       <Pressable
